@@ -1,0 +1,59 @@
+<!doctype.html>
+<html ng-app="sistemaDePedidos">
+  <head>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src='angular.js'></script>
+    <script src='i18n/angular-locale_pt-br.js'></script>
+    <script src='controller.js'></script>
+    <script src='directive.js'></script>
+
+    <style>.selecionado {font-weight:bold; background-color:#FAFAD2;}</style>
+  </head>
+  <body ng-controller="sistemaDePedidosCtrl">
+    <h1>{{titulo}}</h1>
+    <table>
+        <tr>
+            <th><a href ng-click="campo='descricao'; direcao=!direcao">Itens</a></th>
+            <th><a href ng-click="campo='preco'; direcao=!direcao">Valor</a></th>
+        </tr>
+            Busca: <input type=text ng-model="searchText"></input></br>
+        <tr ng-repeat="produto in produtos | filter:searchText | orderBy:campo:direcao">
+            <td> {{produto.descricao | uppercase}} </td>
+            <td> {{produto.preco | currency}} </td>
+        </tr>
+    </table>
+    </br></br>
+        <form name="produtoForm">
+            Produto: <select ng-model="pedido.item" ng-options="produto.descricao for produto in produtos" name="produto" ng-required="true"></select> 
+            Valor: {{pedido.item.preco | currency}}</br>
+            <div>
+                Quantidade: <input type=number ng-model="pedido.quantidade" name="pedido.quantidade" ng-required="true"></input></br>
+            </div>
+            CPF: <input type=text ng-model="pedido.cpf" name="cpf"/></br>
+            <div>
+            CPF formatado: {{pedido.cpf | cpf}}</br>
+            </div>
+            <button ng-click="adicionarPedido()" ng-disabled="produtoForm.$invalid">
+                Finalizar pedido
+            </button></br>
+            <div ng-show="produtoForm.produto.$invalid && produtoForm.produto.$dirty">
+                Por favor selecione um produto.
+            </div></br>
+            <div ng-show="produtoForm.quantidade.$invalid && produtoForm.quantidade.$dirty">
+                Por favor insira a quantidade.
+            </div>
+            <accordion-item title="Titulo do accordion">
+                Conteudo
+            </accordion-item>
+            <div ng-show="produtoForm.produto.$valid && produtoForm.quantidade.$valid">
+                Total: {{valor | currency}}</br>
+                Data: {{hoje | date:'dd/MM/yyyy'}}
+            </div></br></br>
+            <div>    Debug: </br>
+                </p>{{pedido}}</br>
+                </p>{{pedido.quantidade}}</br>
+                </p>{{pedido.cpf}}
+            </div>
+        </form>
+  </body>
+</html>

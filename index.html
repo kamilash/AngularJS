@@ -1,0 +1,77 @@
+<!doctype.html>
+<html ng-app="sistemaDePedidos">
+  <head>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src='angular.js'></script>
+    <script src='i18n/angular-locale_pt-br.js'></script>
+    <script>
+      var app = angular.module("sistemaDePedidos", []);
+      app.controller("sistemaDePedidosCtrl", function($scope) {
+        $scope.hoje = new Date();
+        $scope.titulo = "Sistema de pedidos";        
+        $scope.message = "Faca seu pedido!";
+        $scope.produtos = [{descricao: "Temaki", preco: 12},
+                           {descricao: "Sashimi", preco: 2},
+                           {descricao: "Hossomaki", preco: 1}];
+        $scope.quantidade;
+        $scope.pedido = {};
+        $scope.valor;
+        $scope.cpf = undefined;
+        $scope.setTotal = function() {
+           $scope.valor = $scope.quantidade * $scope.pedido.produto.preco;
+        }
+      });
+    app.filter("cpf", function() {
+            return function(input) {
+                return input.substring(0,3)+"."+input.substring(3,6)+"."+input.substring(6,9)+"-"+input.substring(9,11);
+            } 
+    });
+    </script>
+
+    <style>.selecionado {font-weight:bold; background-color:#FAFAD2;}</style>
+  </head>
+  <body ng-controller="sistemaDePedidosCtrl">
+    <h1>{{titulo}}</h1>
+    <table>
+        <tr>
+            <th><a href ng-click="campo='descricao'; direcao=!direcao">Itens</a></th>
+            <th><a href ng-click="campo='preco'; direcao=!direcao">Valor</a></th>
+        </tr>
+            Busca: <input type=text ng-model="searchText"></input></br>
+        <tr ng-repeat="produto in produtos | filter:searchText | orderBy:campo:direcao">
+            <td> {{produto.descricao | uppercase}} </td>
+            <td> {{produto.preco | currency}} </td>
+        </tr>
+    </table>
+    </br></br>
+        <form name="produtoForm">
+            Produto: <select ng-model="pedido.produto" ng-options="produto.descricao for produto in produtos" name="produto" ng-required="true"></select> 
+            Valor: {{pedido.produto.preco | currency}}</br>
+            <div>
+                Quantidade: <input type=number ng-model="quantidade" name="quantidade" ng-required="true"></input></br>
+            </div>
+            CPF: <input type=text ng-model="cpf" name="cpf"></input></br>
+            <div ng-show="produtoForm.cpf.$valid">
+            CPF formatado: {{cpf | cpf}}</br>
+            </div>
+            <button ng-click="setTotal()" ng-disabled="produtoForm.$invalid">
+                Finalizar pedido
+            </button></br>
+            <div ng-show="produtoForm.produto.$invalid && produtoForm.produto.$dirty">
+                Por favor selecione um produto.
+            </div></br>
+            <div ng-show="produtoForm.quantidade.$invalid && produtoForm.quantidade.$dirty">
+                Por favor insira a quantidade.
+            </div>
+            <div ng-show="produtoForm.produto.$valid && produtoForm.quantidade.$valid">
+                Total: {{valor | currency}}</br>
+                Data: {{hoje | date:'dd/MM/yyyy'}}
+            </div></br></br>
+            <div>    Debug: </br>
+                </p>{{pedido}}</br>
+                </p>{{quantidade}}</br>
+                </p>{{cpf}}
+            </div>
+        </form>
+  </body>
+</html>
