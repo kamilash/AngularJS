@@ -22,6 +22,7 @@
             <td> {{produto.preco | currency}} </td>
         </tr>
     </table>
+    <a href ="itens_detail.html">Detalhes</a>
     </br></br>
         <form name="produtoForm">
             Produto: <select ng-model="pedido.item" ng-options="produto.descricao for produto in produtos" name="produto" ng-required="true"></select> 

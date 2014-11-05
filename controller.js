@@ -15,6 +15,7 @@ app.controller("sistemaDePedidosCtrl", function($scope, $http, SistemaDePedidosA
         }
     };
 */    $scope.valor;
+    $scope.detalhes = {};
     $scope.cpf = undefined;
     $scope.setTotal = function() {
         $scope.valor = $scope.quantidade * $scope.pedido.produto.preco;
@@ -27,9 +28,15 @@ app.controller("sistemaDePedidosCtrl", function($scope, $http, SistemaDePedidosA
         });
     };
     $scope.adicionarPedido = function() {
-        $http.post("http://172.16.200.170:3412/pedidos", $scope.pedido);
+        $http.post("http://172.16.200.237:3412/pedidos", $scope.pedido);
+    };
+    $scope.carregarDetalhesDoProduto = function() {
+        $http.get("http://172.16.200.237:3412/item/1").success(function(data, status) {
+            $scope.detalhes = data;
+        });
     };
     $scope.carregarProdutos()
+    $scope.carregarDetalhesDoProduto()
 });
 app.filter("cpf", function() {
     return function(input) {
@@ -40,7 +47,7 @@ app.filter("cpf", function() {
 });
 app.factory("SistemaDePedidosAPIFactory", function ($http){
     var _getCardapio = function () {
-        return $http.get("http://172.16.200.170:3412/cardapio");
+        return $http.get("http://172.16.200.237:3412/cardapio");
     };
     return {
         getCardapio: _getCardapio
@@ -48,6 +55,6 @@ app.factory("SistemaDePedidosAPIFactory", function ($http){
 });
 app.service("SistemaDePedidosAPIConstructor", function ($http) {
     this.getCardapio = function () {
-        return $http.get("http://172.16.200.170:3412/cardapio");
+        return $http.get("http://172.16.200.237:3412/cardapio");
     };
 });
